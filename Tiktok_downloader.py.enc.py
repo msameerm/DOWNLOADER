@@ -1,7 +1,7 @@
 
 import base64
 from cryptography.fernet import Fernet
-
+#ENCRYPTED BY MUHAMMAD SAMEER.. INSTA:@sameers.80
 # Obfuscated decryption key
 obfuscated_key = 'U2ZqOUhiLWxVZ1cyZUM0WnFlTzAzNTVsTmxlYmVqUVFSMGJZQzB6UGFXaz0='
 
