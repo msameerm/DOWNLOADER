@@ -5,23 +5,29 @@ import subprocess
 from colorama import Fore, Style, init
 import time
 import sys
+import re
 
 # Initialize colorama
 init(autoreset=True)
 
-logo = """
- #####                                     
-#     #   ##   #    # ###### ###### #####  
-#        #  #  ##  ## #      #      #    # 
- #####  #    # # ## # #####  #####  #    # 
-      # ###### #    # #      #      #####  
-#     # #    # #    # #      #      #   #  
- #####  #    # #    # ###### ###### #    # 
+logo = f"""
+{Fore.GREEN} #####                                     
+{Fore.GREEN}#     #   ##   #    # ###### ###### #####  
+{Fore.GREEN}#        #  #  ##  ## #      #      #    # 
+{Fore.BLUE} #####  #    # # ## # #####  #####  #    # 
+{Fore.BLUE}      # ###### #    # #      #      #####  
+{Fore.BLUE}#     # #    # #    # #      #      #   #  
+{Fore.BLUE} #####  #    # #    # ###### ###### #    # 
                                            
 """
 
 def print_logo():
     print(logo)
+
+def sanitize_filename(filename):
+    sanitized = re.sub(r'[<>:"/\\|?*]', '_', filename)
+    max_length = 255 - len(".mp4.part")  # Account for the file extension
+    return sanitized[:max_length]
 
 def get_tiktok_videos(profile_url):
     # Command to list all videos from the TikTok profile
@@ -66,6 +72,7 @@ def download_videos(video_urls):
             'quiet': True,  # Suppress detailed logs
             'no_warnings': True,  # Suppress warnings
             'retries': 10,  # Number of retries
+            'outtmpl': '%(title).100s_%(id)s.%(ext)s'  # Template for output filename, truncated title to 100 chars
         }
 
         success = False
@@ -75,7 +82,7 @@ def download_videos(video_urls):
                     ydl.download([video_url])
                     success = True
             except Exception as e:
-                print(f"{Fore.RED}\nConnection error. Retrying in 10 seconds...")
+                print(f"{Fore.RED}\nConnection error or file name too long. Retrying in 10 seconds...")
                 time.sleep(10)  # Wait before retrying
 
 def main_menu():
@@ -114,4 +121,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
